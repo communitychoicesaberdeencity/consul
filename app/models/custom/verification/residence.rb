@@ -1,4 +1,3 @@
-
 require_dependency Rails.root.join("app", "models", "verification", "residence").to_s
 
 class Verification::Residence
@@ -16,14 +15,16 @@ class Verification::Residence
     end
 
     def postal_code_is_allowed
-      # Empty method because we don't check against postcode
+      errors.add(:postal_code, I18n.t("verification.residence.new.error_not_allowed_postal_code")) unless valid_postal_code?
     end
 
     def valid_postal_code?
-      # Empty method because we don't check against postcode
+      Zipcode.where(code: postal_code.upcase).any?
     end
 
     def document_number_uniqueness_if_present
-      # Empty method because we don't check against document
+      if document_number.present?
+        document_number_uniqueness
+      end
     end
 end
