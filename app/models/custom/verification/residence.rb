@@ -5,8 +5,25 @@ class Verification::Residence
 
   validates :date_of_birth, presence: true
   validates :terms_of_service, acceptance: { allow_nil: false }
+  validates :postal_code, presence: true
 
   validate :allowed_age
+  validate :postal_code_is_allowed
+  validate :document_number_uniqueness_if_present
+
+  def geozone
+    nil
+  end
+
+  def gender
+    nil
+  end
+
+  alias_method :default_save, :save
+
+  def save
+    default_save && user.update(verified_at: Time.current)
+  end
 
   private
 
